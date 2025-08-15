@@ -74,6 +74,18 @@ class Audit extends Main{
                 }
 
                 columns.push(
+                    {title: "JUDGE", field: "JUDGE", headerFilter:true, formatter: function(cell){
+                        let value = cell.getValue();
+
+                        if(value == "PASSED"){
+                            cell.getElement().style.backgroundColor = "#08A04B";
+                        } else if(value == "FAILED") {
+                            cell.getElement().style.backgroundColor = "#F75D59";
+                        }
+
+                        cell.getElement().style.color = "#F5F5F5";
+                        return '<span>'+value+'</span>';
+                    }},
                     {title: "SHIFT", field: "SHIFT", headerFilter:true,},
                     {title: "DATETIME", field: "CREATED_AT", headerFilter:true,},
                     {title: "INSPECTED BY", field: "CREATED_BY", headerFilter:true,},
@@ -85,10 +97,6 @@ class Audit extends Main{
                         {title: "OPERATOR "+(i+1), field:"OPERATOR_"+(i+1)},
                     )
                 }
-
-                columns.push(
-                    {title: "JUDGE", field: "JUDGE", headerFilter:true,},
-                )
 
                 //generate tabulator
                 self.tableDisplay = new Tabulator(tableElem,{

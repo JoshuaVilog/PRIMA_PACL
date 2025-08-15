@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $shift = $_POST['shift'];
     $judge = $_POST['judge'];
     $lineLeader = $_POST['lineLeader'];
+    $ipqc = $_POST['ipqc'];
+    $technician = $_POST['technician'];
     $operator = $_POST['operator'];
     $auditList = $_POST['auditList'];
     $userCode = $_POST['userCode'];
@@ -33,12 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $record->shift = $shift;
         $record->judge = $judge;
         $record->lineLeader = $lineLeader;
+        $record->ipqc = $ipqc;
+        $record->technician = $technician;
         $record->operator = $operator;
         $record->auditList = $auditList;
         $record->userCode = $userCode;
         $record->id = $id;
         
-        $isDuplicate = $record::CheckDuplicatePlanMasterlist($record);
+        /* $isDuplicate = $record::CheckDuplicatePlanMasterlist($record);
 
         if($isDuplicate == true){
 
@@ -46,8 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else if($isDuplicate == false){
 
             $record::InsertPlanMasterlist($record);
-            echo json_encode(['status' => 'success', 'message' => '']);
-        }
+            
+        } */
+        $record::InsertPlanMasterlist($record);
+        echo json_encode(['status' => 'success', 'message' => '']);
 
     } catch (Exception $e){
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

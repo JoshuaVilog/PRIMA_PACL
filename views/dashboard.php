@@ -14,13 +14,31 @@
                 <div class="page-header">
                     <h1>Dashboard</h1>
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <div class="form-group">
                                 <label for="">
                                     <strong>Date:</strong>
                                 </label>
                                 <input type="date" id="txtDate" class="form-control">
                             </div>
+                        </div>
+                        <div class="col-sm-6"></div>
+                        <style>
+                            #tableAuditList th, #tableAuditList td{
+                                border: 1px solid #000000;
+                                padding: 2px;
+                            }
+                        </style>
+                        <div class="col-sm-4">
+                            <!-- <table id="tableAuditList">
+                                <tr>
+                                    <th>TEST</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>qwe</td>
+                                </tr>
+                            </table> -->
                         </div>
                     </div>
                     <div id="table-records"></div>
@@ -51,5 +69,11 @@
     setTimeout(() => {
         audit.GetAuditMasterlistByDate("#table-records", date);
     }, 1000);
+
+    setInterval(() => {
+        audit.GetAuditMasterlistByDate("#table-records", date);
+    }, 60000);
+
+
 
 </script>

@@ -83,6 +83,18 @@ class Main {
 
         return list;
     }
+    GetAuditCategory(){
+        let list = [
+            {a:1, b:"PRODUCTION"},
+            {a:2, b:"TPM"},
+            {a:3, b:"TECHNICIAN"},
+            {a:4, b:"MATERIAL HANDLER"},
+            {a:5, b:"PQC"},
+            {a:6, b:"OPERATOR"},
+        ];
+
+        return list;
+    }
 
     GetEmployeeRecords(){
         let self = this;

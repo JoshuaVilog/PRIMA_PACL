@@ -19,7 +19,7 @@ class AuditModel {
     }
     public static function AuditMasterlistRecords() {
         $db = DB::connectionPACL();
-        $sql = "SELECT `RID`, `JOB_ORDER_NO`, `MACHINE`, `ITEM_CODE`, `ITEM_NAME`, `MODEL`, `CUSTOMER`, `SHIFT`, `LINE_LEADER`, `OPERATOR`, `JUDGE`, `AUDIT_CHECKLIST`, `CREATED_AT`, `CREATED_BY` FROM pacl_masterlist";
+        $sql = "SELECT `RID`, `JOB_ORDER_NO`, `MACHINE`, `ITEM_CODE`, `ITEM_NAME`, `MODEL`, `CUSTOMER`, `SHIFT`, `LINE_LEADER`, `OPERATOR`, `IPQC`, `TECHNICIAN`, `JUDGE`, `AUDIT_CHECKLIST`, `CREATED_AT`, `CREATED_BY` FROM pacl_masterlist ORDER BY RID DESC";
         $result = $db->query($sql);
 
         $records = [];
@@ -76,6 +76,8 @@ class AuditModel {
         $shift = $db->real_escape_string($records->shift);
         $judge = $db->real_escape_string($records->judge);
         $lineLeader = $db->real_escape_string($records->lineLeader);
+        $ipqc = $db->real_escape_string($records->ipqc);
+        $technician = $db->real_escape_string($records->technician);
         $operator = $db->real_escape_string($records->operator);
         $auditList = $db->real_escape_string($records->auditList);
         $userCode = $db->real_escape_string($records->userCode);
@@ -91,6 +93,8 @@ class AuditModel {
             `CUSTOMER`,
             `SHIFT`,
             `LINE_LEADER`,
+            `IPQC`,
+            `TECHNICIAN`,
             `OPERATOR`,
             `JUDGE`,
             `AUDIT_CHECKLIST`,
@@ -107,6 +111,8 @@ class AuditModel {
             '',
             '$shift',
             '$lineLeader',
+            '$ipqc',
+            '$technician',
             '$operator',
             '$judge',
             '$auditList',
@@ -117,7 +123,6 @@ class AuditModel {
     public static function UpdatePlanMasterlist($records){
         $db = DB::connectionPACL();
         // $userCode = $_SESSION['USER_CODE'];
-
         
         $id = $db->real_escape_string($records->id);
         $shift = $db->real_escape_string($records->shift);

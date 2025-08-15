@@ -27,7 +27,7 @@ class EmployeeModel {
 
     public static function DisplayEmployeeRecords() {
         $db = DB::connectionHRIS();
-        $sql = "SELECT EMPLOYEE_ID, RFID, EMPLOYEE_NAME, F_NAME, L_NAME, M_NAME, JOB_POSITION_ID, ACTIVE FROM 1_hris.1_employee_masterlist_tb WHERE DELETED_STATUS = '0'";
+        $sql = "SELECT EMPLOYEE_ID, RFID, EMPLOYEE_NAME, F_NAME, L_NAME, M_NAME, JOB_POSITION_ID, ACTIVE, DEPARTMENT_ID FROM 1_hris.1_employee_masterlist_tb WHERE DELETED_STATUS = '0'";
         $result = $db->query($sql);
 
         $records = [];

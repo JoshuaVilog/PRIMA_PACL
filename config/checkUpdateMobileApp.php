@@ -1,5 +1,5 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-echo "1.0.0";
+echo "1.0.1";
 
 ?>
