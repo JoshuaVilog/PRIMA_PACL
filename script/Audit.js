@@ -48,10 +48,13 @@ class Audit extends Main{
                     row.JUDGE = self.SetJudge(parseInt(row.JUDGE));
                     row.LINE_LEADER = self.SetEmployeeNameByRFID(row.LINE_LEADER);
                     row.CREATED_BY = self.SetEmployeeNameByRFID(row.CREATED_BY);
+                    row.IPQC = self.SetEmployeeNameByRFID(row.IPQC);
+                    row.TECHNICIAN = self.SetEmployeeNameByRFID(row.TECHNICIAN);
                 });
 
                 columns.push(
-                    {title: "MACHINE", field: "MACHINE", headerFilter:true, frozen: true, formatter: function(cell){
+                    {title: "#", formatter: "rownum"},
+                    {title: "MC", field: "MACHINE", headerFilter:true, frozen: true, formatter: function(cell){
                         cell.getElement().style.backgroundColor = "#ffffff";
                         return cell.getValue();
                     }, },
@@ -88,7 +91,9 @@ class Audit extends Main{
                     }},
                     {title: "SHIFT", field: "SHIFT", headerFilter:true,},
                     {title: "DATETIME", field: "CREATED_AT", headerFilter:true,},
-                    {title: "INSPECTED BY", field: "CREATED_BY", headerFilter:true,},
+                    {title: "AUDIT BY", field: "CREATED_BY", headerFilter:true,},
+                    {title: "IPQC", field: "IPQC", headerFilter:true,},
+                    {title: "TECHNICIAN", field: "TECHNICIAN", headerFilter:true,},
                     {title: "LINE LEADER", field: "LINE_LEADER", headerFilter:true,},
                 );
 
@@ -115,5 +120,9 @@ class Audit extends Main{
                 console.log("Error:"+JSON.stringify(err));
             },
         });
+    }
+    ExportTable(){
+
+        this.tableDisplay.download("xlsx", "Audit.xlsx", { sheetName: "Sheet1" });
     }
 }

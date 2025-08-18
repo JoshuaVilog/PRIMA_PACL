@@ -41,6 +41,7 @@
                             </table> -->
                         </div>
                     </div>
+                    <button class="btn btn-primary btn-sm" id="btnExport">Download</button>
                     <div id="table-records"></div>
 
                 </div>
@@ -72,8 +73,15 @@
 
     setInterval(() => {
         audit.GetAuditMasterlistByDate("#table-records", date);
-    }, 60000);
+    }, 120000);
 
+    $("#txtDate").change(function () {
+        date = $(this).val();
+        audit.GetAuditMasterlistByDate("#table-records", date);
+    });
+    $("#btnExport").click(function(){
+        audit.ExportTable();
+    });
 
 
 </script>

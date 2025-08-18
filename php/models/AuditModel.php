@@ -31,6 +31,20 @@ class AuditModel {
 
         return $records;
     }
+    public static function AuditMasterlistRecordsByDate($date) {
+        $db = DB::connectionPACL();
+        $sql = "SELECT `RID`, `JOB_ORDER_NO`, `MACHINE`, `ITEM_CODE`, `ITEM_NAME`, `MODEL`, `CUSTOMER`, `SHIFT`, `LINE_LEADER`, `OPERATOR`, `IPQC`, `TECHNICIAN`, `JUDGE`, `AUDIT_CHECKLIST`, `CREATED_AT`, `CREATED_BY` FROM pacl_masterlist WHERE DATE = '$date' ORDER BY RID DESC";
+        $result = $db->query($sql);
+
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $records[] = $row;
+            }
+        }
+
+        return $records;
+    }
     public static function PlanMasterlistRecords($date) {
         $db = DB::connectionMES();
         $sql = "SELECT `JOB_ORDER_NO`,`DATE_`, `ITEM_CODE`, `ITEM_NAME`, `MACHINE_CODE`, `CUSTOMER_NAME` FROM masterdatabase.mis_prod_plan_dl WHERE `DATE_` = '$date' ORDER BY ID DESC";
