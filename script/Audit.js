@@ -5,7 +5,7 @@ class Audit extends Main{
         this.tableDisplay = null;
     }
 
-    GetAuditMasterlistByDate(tableElem, date) {
+    GetAuditMasterlistByDate(tableElem, startDate, endDate) {
         let self = this;
         let auditList = JSON.parse(localStorage.getItem(self.lsAuditList));
 
@@ -13,7 +13,8 @@ class Audit extends Main{
             url: "php/controllers/Audit/AuditMasterlistRecords.php",
             method: "POST",
             data: {
-                date: date,
+                startDate: startDate,
+                endDate: endDate,
             },
             datatype: "json",
             success: function(response){
@@ -50,51 +51,100 @@ class Audit extends Main{
                     row.CREATED_BY = self.SetEmployeeNameByRFID(row.CREATED_BY);
                     row.IPQC = self.SetEmployeeNameByRFID(row.IPQC);
                     row.TECHNICIAN = self.SetEmployeeNameByRFID(row.TECHNICIAN);
+                    row.AUDIT_DATE = row.CREATED_AT.split(" ")[0];
+                    row.AUDIT_TIME = row.CREATED_AT.split(" ")[1];
                 });
 
                 columns.push(
-                    {title: "#", formatter: "rownum"},
-                    {title: "MC", field: "MACHINE", headerFilter:true, frozen: true, formatter: function(cell){
+                    {title: "#", formatter: "rownum", frozen: true},
+                    {title: "MC", field: "MACHINE", headerFilter:true, frozen: true, headerHozAlign: "center", formatter: function(cell){
                         cell.getElement().style.backgroundColor = "#ffffff";
                         return cell.getValue();
                     }, },
-                    {title: "ITEM_CODE", field: "ITEM_CODE", headerFilter:true, frozen: true, formatter: function(cell){
+                    {title: "ITEM_CODE", field: "ITEM_CODE", headerFilter:true, headerHozAlign: "center", frozen: true, formatter: function(cell){
                         cell.getElement().style.backgroundColor = "#ffffff";
                         return cell.getValue();
                     },},
-                    {title: "ITEM_NAME", field: "ITEM_NAME", headerFilter:true, frozen: true, formatter: function(cell){
+                    {title: "ITEM_NAME", field: "ITEM_NAME", headerFilter:true, headerHozAlign: "center", frozen: true, formatter: function(cell){
                         cell.getElement().style.backgroundColor = "#ffffff";
                         return cell.getValue();
                     },},
                 );
 
-                for(let i = 0; i < auditList.length; i++) {
+                let auditCategory = self.GetAuditCategory();
+
+                for(let i = 0; i < auditCategory.length; i++) {
+                    let auditColumn = [];
+                    
+
+                    for(let j = 0; j < auditList.length; j++) {
+                        
+                        if(auditCategory[i].a == auditList[j].CATEGORY) {
+                            auditColumn.push({
+                                title: auditList[j].AUDIT_CODE, 
+                                field: auditList[j].AUDIT_CODE, 
+                                headerSort: false,
+                                headerHozAlign: "center",
+                                headerFilterPlaceholder: "Select",
+                                headerFilter: "list", 
+                                headerFilterParams: {
+                                    values:{
+                                        "":"-Select-",
+                                        "O":"O",
+                                        "X":"X",
+                                    }
+                                },
+                                hozAlign: "center",
+                                formatter: function(cell){
+                                    let value = cell.getValue();
+
+                                    if(value == "O"){
+                                        cell.getElement().style.color = "#000000";
+                                        cell.getElement().style.backgroundColor = "#ffffff";
+                                    } else if(value == "X") {
+                                        cell.getElement().style.color = "#ff0000";
+                                        cell.getElement().style.backgroundColor = "#ffff00";
+                                    } else {
+                                        cell.getElement().style.color = "#000000";
+                                        cell.getElement().style.backgroundColor = "#ffffff";
+                                    }
+
+                                    return "<b>"+value+"</b>";
+                                }
+                                
+                            })
+                        }
+                    }
                     columns.push({
-                        title: auditList[i].AUDIT_CODE,
-                        field: auditList[i].AUDIT_CODE, 
-                        headerSort: false,
-                    },)
+                        title: auditCategory[i].b,
+                        headerHozAlign: "center",
+                        columns: auditColumn,
+                    })
                 }
 
                 columns.push(
-                    {title: "JUDGE", field: "JUDGE", headerFilter:true, formatter: function(cell){
+                    {title: "JUDGE", field: "JUDGE", headerFilter:true, hozAlign:"center", headerHozAlign: "center", formatter: function(cell){
                         let value = cell.getValue();
 
                         if(value == "PASSED"){
-                            cell.getElement().style.backgroundColor = "#08A04B";
+                            cell.getElement().style.color = "#000000";
+                            cell.getElement().style.backgroundColor = "#6fc78d";
+                            
                         } else if(value == "FAILED") {
-                            cell.getElement().style.backgroundColor = "#F75D59";
+                            cell.getElement().style.color = "#ffffff";
+                            cell.getElement().style.backgroundColor = "#ff0000";
                         }
 
-                        cell.getElement().style.color = "#F5F5F5";
-                        return '<span>'+value+'</span>';
+                        
+                        return '<strong>'+value+'</strong>';
                     }},
-                    {title: "SHIFT", field: "SHIFT", headerFilter:true,},
-                    {title: "DATETIME", field: "CREATED_AT", headerFilter:true,},
-                    {title: "AUDIT BY", field: "CREATED_BY", headerFilter:true,},
-                    {title: "IPQC", field: "IPQC", headerFilter:true,},
-                    {title: "TECHNICIAN", field: "TECHNICIAN", headerFilter:true,},
-                    {title: "LINE LEADER", field: "LINE_LEADER", headerFilter:true,},
+                    {title: "SHIFT", field: "SHIFT", headerFilter:true, headerHozAlign: "center", },
+                    {title: "DATE", field: "AUDIT_DATE", headerFilter:true, headerHozAlign: "center",},
+                    {title: "TIME", field: "AUDIT_TIME", headerFilter:true, headerHozAlign: "center",},
+                    {title: "AUDIT BY", field: "CREATED_BY", headerFilter:true, headerHozAlign: "center",},
+                    {title: "IPQC", field: "IPQC", headerFilter:true, headerHozAlign: "center",},
+                    {title: "TECHNICIAN", field: "TECHNICIAN", headerFilter:true, headerHozAlign: "center",},
+                    {title: "LINE LEADER", field: "LINE_LEADER", headerFilter:true, headerHozAlign: "center",},
                 );
 
                 for(let i = 0; i < 2; i++) {
@@ -107,7 +157,7 @@ class Audit extends Main{
                 self.tableDisplay = new Tabulator(tableElem,{
                     data: list,
                     pagination: "local",
-                    paginationSize: 25,
+                    paginationSize: 50,
                     paginationSizeSelector: [25, 50, 100],
                     page: 1,
                     // layout: "fitColumns",
@@ -124,5 +174,25 @@ class Audit extends Main{
     ExportTable(){
 
         this.tableDisplay.download("xlsx", "Audit.xlsx", { sheetName: "Sheet1" });
+    }
+
+    DisplayAuditCheckList(tableElem){
+        let auditCategory = this.GetAuditCategory();
+        let auditList = JSON.parse(localStorage.getItem(this.lsAuditList));
+        let element = "";
+
+        for(let j = 0; j < auditList.length; j++) {
+
+            element += '<tr> <td>'+auditList[j].AUDIT_CODE+'</td> <td>'+auditList[j].AUDIT_DESC+'</td> </tr>';
+
+        }
+
+        tableElem.html(element);
+       /*  for(let i = 0; i < auditCategory.length; i++) {
+            for(let j = 0; j < auditList.length; j++) {
+
+
+            }
+        }      */  
     }
 }

@@ -2,17 +2,17 @@
 class Main {
 
     constructor(){
-        this.systemLocalStorageTitle = "template";
+        this.systemLocalStorageTitle = "pacl";
         this.lsEmployeeList = this.systemLocalStorageTitle +"-employee-list";
         this.lsAuditList = this.systemLocalStorageTitle +"-audit-list";
 
     }
 
-    GetCurrentDate(){
+    GetCurrentDate(numMinus){
         let currentDate = new Date();
         let year = currentDate.getFullYear();
         let month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
-        let day = currentDate.getDate().toString().padStart(2, '0');
+        let day = (numMinus == undefined)? currentDate.getDate().toString().padStart(2, '0') : currentDate.getDate().toString().padStart(2, '0') - numMinus;
         let formattedDate = `${year}-${month}-${day}`;
 
         // Outputs something like: 2024-05-29
@@ -85,7 +85,7 @@ class Main {
     }
     GetAuditCategory(){
         let list = [
-            {a:1, b:"PRODUCTION"},
+            {a:1, b:"LINE LEADER"},
             {a:2, b:"TPM"},
             {a:3, b:"TECHNICIAN"},
             {a:4, b:"MATERIAL HANDLER"},

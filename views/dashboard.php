@@ -13,17 +13,31 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>Dashboard</h1>
+                    <hr>
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-1">
                             <div class="form-group">
                                 <label for="">
-                                    <strong>Date:</strong>
+                                    <strong>START DATE:</strong>
                                 </label>
-                                <input type="date" id="txtDate" class="form-control">
+                                <input type="date" id="txtStartDate" class="form-control">
+                                <!-- <input type="date" id="txtDate" class="form-control"> -->
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <label for="">
+                                    <strong>END DATE:</strong>
+                                </label>
+                                <input type="date" id="txtEndDate" class="form-control">
                             </div>
                         </div>
                         <div class="col-sm-6"></div>
                         <style>
+                            #tableAuditList {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
                             #tableAuditList th, #tableAuditList td{
                                 border: 1px solid #000000;
                                 padding: 2px;
@@ -31,13 +45,15 @@
                         </style>
                         <div class="col-sm-4">
                             <!-- <table id="tableAuditList">
-                                <tr>
-                                    <th>TEST</th>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>qwe</td>
-                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Subject</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyAuditList">
+
+                                </tbody>
                             </table> -->
                         </div>
                     </div>
@@ -62,22 +78,45 @@
 <script src="/<?php echo $rootFolder; ?>/script/Audit.js?v=<?php echo $generateRandomNumber; ?>"></script>
 
 <script>
-    $("#txtDate").val(main.GetCurrentDate());
+    $("#txtStartDate").val(main.GetCurrentDate(1));
+    $("#txtEndDate").val(main.GetCurrentDate());
 
     let audit = new Audit();
-    let date = $("#txtDate").val();
+
+    // let startDate = $("#txtStartDate").val();
+    // let endDate = $("#txtEndDate").val();
 
     setTimeout(() => {
-        audit.GetAuditMasterlistByDate("#table-records", date);
+        let startDate = $("#txtStartDate").val();
+        let endDate = $("#txtEndDate").val();
+
+        $("#txtStartDate").prop("max", startDate);
+        $("#txtEndDate").prop("min", endDate);
+
+        audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
+        audit.DisplayAuditCheckList($("#tbodyAuditList"));
     }, 1000);
 
     setInterval(() => {
-        audit.GetAuditMasterlistByDate("#table-records", date);
+        let startDate = $("#txtStartDate").val();
+        let endDate = $("#txtEndDate").val();
+
+        audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
     }, 120000);
 
-    $("#txtDate").change(function () {
-        date = $(this).val();
-        audit.GetAuditMasterlistByDate("#table-records", date);
+    $("#txtStartDate").change(function () {
+        let startDate = $(this).val();
+        let endDate = $("#txtEndDate").val();
+        $("#txtEndDate").prop("min", startDate);
+
+        audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
+    });
+    $("#txtEndDate").change(function () {
+        let endDate = $(this).val();
+        let startDate = $("#txtStartDate").val();
+        $("#txtStartDate").prop("min", endDate);
+
+        audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
     });
     $("#btnExport").click(function(){
         audit.ExportTable();
