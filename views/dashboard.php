@@ -21,7 +21,6 @@
                                     <strong>START DATE:</strong>
                                 </label>
                                 <input type="date" id="txtStartDate" class="form-control">
-                                <!-- <input type="date" id="txtDate" class="form-control"> -->
                             </div>
                         </div>
                         <div class="col-sm-1">
@@ -32,7 +31,7 @@
                                 <input type="date" id="txtEndDate" class="form-control">
                             </div>
                         </div>
-                        <div class="col-sm-6"></div>
+                        <div class="col-sm-8"></div>
                         <style>
                             #tableAuditList {
                                 width: 100%;
@@ -41,10 +40,12 @@
                             #tableAuditList th, #tableAuditList td{
                                 border: 1px solid #000000;
                                 padding: 2px;
+                                font-size: 12px;
                             }
                         </style>
-                        <div class="col-sm-4">
-                            <!-- <table id="tableAuditList">
+                        <div class="col-sm-2">
+                            <!-- <div id="table-audit-list"></div> -->
+                            <table id="tableAuditList">
                                 <thead>
                                     <tr>
                                         <th>Code</th>
@@ -54,9 +55,10 @@
                                 <tbody id="tbodyAuditList">
 
                                 </tbody>
-                            </table> -->
+                            </table>
                         </div>
                     </div>
+                    <i class="ace-icon fa fa-spinner fa-spin blue bigger-125" id="spinner" style="display: none;"></i>
                     <button class="btn btn-primary btn-sm" id="btnExport">Download</button>
                     <div id="table-records"></div>
 
@@ -95,6 +97,7 @@
 
         audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
         audit.DisplayAuditCheckList($("#tbodyAuditList"));
+        // audit.DisplayAuditCheckList("#table-audit-list");
     }, 1000);
 
     setInterval(() => {
@@ -114,7 +117,7 @@
     $("#txtEndDate").change(function () {
         let endDate = $(this).val();
         let startDate = $("#txtStartDate").val();
-        $("#txtStartDate").prop("min", endDate);
+        $("#txtStartDate").prop("max", endDate);
 
         audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
     });

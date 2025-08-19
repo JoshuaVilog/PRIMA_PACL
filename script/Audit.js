@@ -9,6 +9,7 @@ class Audit extends Main{
         let self = this;
         let auditList = JSON.parse(localStorage.getItem(self.lsAuditList));
 
+        $("#spinner").show();
         $.ajax({
             url: "php/controllers/Audit/AuditMasterlistRecords.php",
             method: "POST",
@@ -163,8 +164,24 @@ class Audit extends Main{
                     // layout: "fitColumns",
                     layout:"fitDataFill",
                     columns: columns,
+                    downloadConfig: {
+                        // Enable CSV export
+                        csv: true,
+                        // Enable Excel export
+                        excel: true,
+                        // Enable JSON export
+                        json: true,
+                        // Enable PDF export
+                        pdf: true,
+                        columnHeaders:true, //do not include column headers in downloaded table
+                        columnGroups:false, //do not include column groups in column headers for downloaded table
+                        rowGroups:false, //do not include row groups in downloaded table W
+                        columnCalcs:false, //do not include column calcs in downloaded table
+                        dataTree:false, //do not include data tree in downloaded table
+                    },
                 });
                 
+                $("#spinner").hide();
             },
             error: function(err){
                 console.log("Error:"+JSON.stringify(err));
@@ -172,8 +189,8 @@ class Audit extends Main{
         });
     }
     ExportTable(){
-
-        this.tableDisplay.download("xlsx", "Audit.xlsx", { sheetName: "Sheet1" });
+        let filename = "Audit_" + main.GetPhilippinesDateTime()+".xlsx";
+        this.tableDisplay.download("xlsx", filename, { sheetName: "Sheet1" });
     }
 
     DisplayAuditCheckList(tableElem){
@@ -188,6 +205,16 @@ class Audit extends Main{
         }
 
         tableElem.html(element);
+
+        /* var table = new Tabulator(tableElem, {
+            data: auditList,
+            layout: "fitDataFill",
+            columns: [
+                {title: "ID", field: "RID", headerFilter: "input", visible: false,},
+                {title: "CODE", field: "AUDIT_CODE", headerFilter: "input"},
+                {title: "SUBJECT", field: "AUDIT_DESC", headerFilter: "input"},
+            ],
+        }); */
        /*  for(let i = 0; i < auditCategory.length; i++) {
             for(let j = 0; j < auditList.length; j++) {
 
