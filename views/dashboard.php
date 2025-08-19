@@ -31,29 +31,44 @@
                                 <input type="date" id="txtEndDate" class="form-control">
                             </div>
                         </div>
-                        <div class="col-sm-8"></div>
+                        <div class="col-sm-4"></div>
                         <style>
-                            #tableAuditList {
+                            .tableAuditList {
                                 width: 100%;
                                 border-collapse: collapse;
                             }
-                            #tableAuditList th, #tableAuditList td{
+                            .tableAuditList th, .tableAuditList td{
                                 border: 1px solid #000000;
                                 padding: 2px;
                                 font-size: 12px;
+                                text-align: center;
                             }
                         </style>
-                        <div class="col-sm-2">
-                            <!-- <div id="table-audit-list"></div> -->
-                            <table id="tableAuditList">
+                        <div class="col-sm-3">
+                            <table id="tableAuditList1" class="tableAuditList">
                                 <thead>
                                     <tr>
-                                        <th>Code</th>
-                                        <th>Subject</th>
+                                        <th>PIC</th>
+                                        <th>CODE</th>
+                                        <th>SUBJECT</th>
+                                        <th>ISSUES</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbodyAuditList">
-
+                                <tbody id="tbodyAuditList1">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-3">
+                            <table id="tableAuditList2" class="tableAuditList">
+                                <thead>
+                                    <tr>
+                                        <th>PIC</th>
+                                        <th>CODE</th>
+                                        <th>SUBJECT</th>
+                                        <th>ISSUES</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyAuditList2">
                                 </tbody>
                             </table>
                         </div>
@@ -96,7 +111,7 @@
         $("#txtEndDate").prop("min", endDate);
 
         audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
-        audit.DisplayAuditCheckList($("#tbodyAuditList"));
+        // audit.DisplayAuditCheckList();
         // audit.DisplayAuditCheckList("#table-audit-list");
     }, 1000);
 

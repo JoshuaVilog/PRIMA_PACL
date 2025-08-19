@@ -85,12 +85,12 @@ class Main {
     }
     GetAuditCategory(){
         let list = [
-            {a:1, b:"LINE LEADER"},
-            {a:2, b:"TPM"},
-            {a:3, b:"TECHNICIAN"},
-            {a:4, b:"MATERIAL HANDLER"},
-            {a:5, b:"PQC"},
-            {a:6, b:"OPERATOR"},
+            {a:1, b:"LINE LEADER", c:"#2e5895"},
+            {a:2, b:"TPM", c:"#00a86b"},
+            {a:3, b:"TECHNICIAN", c:"#c23b21"},
+            {a:4, b:"MATERIAL HANDLER", c:"#6b249d"},
+            {a:5, b:"IPQC", c:"#ffc32b"},
+            {a:6, b:"OPERATOR", c:"#f04923"},
         ];
 
         return list;
@@ -157,6 +157,12 @@ class Main {
 
     SetAudit(id){
         let list = JSON.parse(localStorage.getItem(this.lsAuditList));
+        let result = list.find(element => element.a === id);
+
+        return result ? result.b: "";
+    }
+    SetAuditCategory(id){
+        let list = this.GetAuditCategory();
         let result = list.find(element => element.a === id);
 
         return result ? result.b: "";

@@ -3,20 +3,6 @@ require_once __DIR__ . '/../../config/db.php';
 
 class AuditModel {
     
-    public static function DisplayRecords() {
-        $db = DB::connectionPACL();
-        $sql = "SELECT * FROM list_audit WHERE COALESCE(DELETED_AT, '') = '' ORDER BY RID DESC";
-        $result = $db->query($sql);
-
-        $records = [];
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $records[] = $row;
-            }
-        }
-
-        return $records;
-    }
     public static function AuditMasterlistRecords() {
         $db = DB::connectionPACL();
         $sql = "SELECT `RID`, `JOB_ORDER_NO`, `MACHINE`, `ITEM_CODE`, `ITEM_NAME`, `MODEL`, `CUSTOMER`, `SHIFT`, `LINE_LEADER`, `OPERATOR`, `IPQC`, `TECHNICIAN`, `JUDGE`, `AUDIT_CHECKLIST`, `CREATED_AT`, `CREATED_BY` FROM pacl_masterlist ORDER BY RID DESC";
@@ -160,27 +146,96 @@ class AuditModel {
         return $db->query($sql);
     }
 
-    /*
-    public static function RemoveRecord($id){
+
+    ////////////// CRUD AUDIT //////////////
+
+    public static function DisplayRecords() {
+        $db = DB::connectionPACL();
+        $sql = "SELECT * FROM list_audit WHERE COALESCE(DELETED_AT, '') = '' ORDER BY RID DESC";
+        $result = $db->query($sql);
+
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $records[] = $row;
+            }
+        }
+
+        return $records;
+    }
+    public static function GetAuditRecord($id){
+        $db = DB::connectionPACL();
+
+        $sql = "SELECT * FROM list_audit WHERE RID = $id";
+        $result = mysqli_query($db,$sql);
+
+        if(mysqli_num_rows($result) == 0){
+            return null;
+        } else {
+            $row = mysqli_fetch_assoc($result);
+
+            return $row;
+        }
+    }
+    public static function CheckDuplicateAudit($record){
+        $db = DB::connectionPACL();
+
+        $desc = $db->real_escape_string($records->desc);
+        $code = $db->real_escape_string($records->code);
+
+        $find = $desc . '-' . $code;
+        $sql = "SELECT RID FROM list_audit WHERE CONCAT(AUDIT_DESC,'-',AUDIT_CODE, COALESCE(DELETED_AT, '')) = '$find' ";
+        $result = mysqli_query($db,$sql);
+
+        if(mysqli_num_rows($result) == 0){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function InsertAuditRecord($records){
         $db = DB::connectionPACL();
         // $userCode = $_SESSION['USER_CODE'];
 
-        date_default_timezone_set('Asia/Manila');
-        $createdAt = date("Y-m-d H:i:s");
+        $desc = $db->real_escape_string($records->desc);
+        $code = $db->real_escape_string($records->code);
+        $category = $db->real_escape_string($records->category);
+
+        $sql = "INSERT INTO `list_audit`(
+            `RID`,
+            `AUDIT_DESC`,
+            `AUDIT_CODE`,
+            `CATEGORY`
+        )
+        VALUES(
+            DEFAULT,
+            '$desc',
+            '$code',
+            '$category'
+        )";
+        return $db->query($sql);
+    }
+    public static function UpdateAuditRecord($records){
+        $db = DB::connectionPACL();
+        // $userCode = $_SESSION['USER_CODE'];
+
+        $desc = $db->real_escape_string($records->desc);
+        $code = $db->real_escape_string($records->code);
+        $category = $db->real_escape_string($records->category);
+        $id = $records->id;
 
         $sql = "UPDATE
             `list_audit`
         SET
-            `DELETED_AT` = '$createdAt'
+            `AUDIT_DESC` = '$desc',
+            `AUDIT_CODE` = '$code',
+            `CATEGORY` = '$category'
         WHERE
             `RID` = $id";
-        
         return $db->query($sql);
-
-
     }
 
- */
 }
 
 ?>
