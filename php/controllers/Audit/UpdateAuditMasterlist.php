@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $record::InsertPlanMasterlist($record);
             
         } */
-        $record::InsertPlanMasterlist($record);
+        $record::UpdatePlanMasterlist($record);
         echo json_encode(['status' => 'success', 'message' => '']);
 
     } catch (Exception $e){

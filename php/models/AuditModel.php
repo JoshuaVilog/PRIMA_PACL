@@ -31,6 +31,20 @@ class AuditModel {
 
         return $records;
     }
+    public static function AuditMasterlistRecordsByJobOrder($jobOrderNo) {
+        $db = DB::connectionPACL();
+        $sql = "SELECT `RID`, `JOB_ORDER_NO`, `MACHINE`, `ITEM_CODE`, `ITEM_NAME`, `MODEL`, `CUSTOMER`, `SHIFT`, `LINE_LEADER`, `OPERATOR`, `IPQC`, `TECHNICIAN`, `JUDGE`, `AUDIT_CHECKLIST`, `CREATED_AT`, `CREATED_BY` FROM pacl_masterlist WHERE JOB_ORDER_NO = '$jobOrderNo' ORDER BY RID DESC";
+        $result = $db->query($sql);
+
+        $records = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $records[] = $row;
+            }
+        }
+
+        return $records;
+    }
     public static function PlanMasterlistRecords($date) {
         $db = DB::connectionMES();
         $sql = "SELECT `JOB_ORDER_NO`,`DATE_`, `ITEM_CODE`, `ITEM_NAME`, `MACHINE_CODE`, `CUSTOMER_NAME` FROM masterdatabase.mis_prod_plan_dl WHERE `DATE_` = '$date' ORDER BY ID DESC";
@@ -80,7 +94,11 @@ class AuditModel {
         $technician = $db->real_escape_string($records->technician);
         $operator = $db->real_escape_string($records->operator);
         $auditList = $db->real_escape_string($records->auditList);
+        $timeIn = $db->real_escape_string($records->timeIn);
         $userCode = $db->real_escape_string($records->userCode);
+
+        date_default_timezone_set('Asia/Manila');
+        $createdAt = date("Y-m-d H:i:s");
 
         $sql = "INSERT INTO `pacl_masterlist`(
             `RID`,
@@ -98,6 +116,8 @@ class AuditModel {
             `OPERATOR`,
             `JUDGE`,
             `AUDIT_CHECKLIST`,
+            `TIME_IN`,
+            `TIME_OUT`,
             `CREATED_BY`
         )
         VALUES(
@@ -116,6 +136,8 @@ class AuditModel {
             '$operator',
             '$judge',
             '$auditList',
+            '$timeIn',
+            '$createdAt',
             '$userCode'
         )";
         return $db->query($sql);
@@ -129,6 +151,8 @@ class AuditModel {
         $judge = $db->real_escape_string($records->judge);
         $lineLeader = $db->real_escape_string($records->lineLeader);
         $operator = $db->real_escape_string($records->operator);
+        $ipqc = $db->real_escape_string($records->ipqc);
+        $technician = $db->real_escape_string($records->technician);
         $auditList = $db->real_escape_string($records->auditList);
         $userCode = $db->real_escape_string($records->userCode);
 
@@ -138,9 +162,11 @@ class AuditModel {
             `SHIFT` = '$shift',
             `LINE_LEADER` = '$lineLeader',
             `OPERATOR` = '$operator',
+            `IPQC` = '$ipqc',
+            `TECHNICIAN` = '$technician',
             `JUDGE` = '$judge',
             `AUDIT_CHECKLIST` = '$auditList',
-            `UPDATED_BY` = '$userCode',
+            `UPDATED_BY` = '$userCode'
         WHERE
             `RID` = $id";
         return $db->query($sql);

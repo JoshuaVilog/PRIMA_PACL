@@ -18,6 +18,8 @@ try {
         $auditRID = 0;
         $auditShift = 0;
         $auditJudge = 0;
+        $auditCreatedBy = 0;
+        $auditCreatedAt = "";
 
         foreach($AuditRecords as $audit){
             if($plan['JOB_ORDER_NO'] == $audit['JOB_ORDER_NO']){
@@ -25,6 +27,8 @@ try {
                 $auditRID = $audit['RID'];
                 $auditShift = $audit['SHIFT'];
                 $auditJudge = $audit['JUDGE'];
+                $auditCreatedBy = $audit['CREATED_BY'];
+                $auditCreatedAt = $audit['CREATED_AT'];
                 break;
 
             }    
@@ -41,6 +45,8 @@ try {
         $newRow['CUSTOMER_NAME'] = $plan['CUSTOMER_NAME'];
         $newRow['SHIFT'] = $auditShift;
         $newRow['JUDGE'] = $auditJudge;
+        $newRow['CREATED_AT'] = $auditCreatedAt;
+        $newRow['CREATED_BY'] = $auditCreatedBy;
         $newRow['AUDIT_RID'] = $auditRID;
 
         $records[] = $newRow;
