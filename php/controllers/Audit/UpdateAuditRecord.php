@@ -18,14 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $record->category = $category;
         $record->id = $id;
 
-        $isDuplicate = $record::CheckDuplicateAudit($desc);
+        $isDuplicate = $record::CheckDuplicateAudit($record);
 
         if($isDuplicate == true){
 
             echo json_encode(['status' => 'duplicate', 'message' => '']);
         } else if($isDuplicate == false){
 
-            $record::UpdateRecord($record);
+            $record::UpdateAuditRecord($record);
             echo json_encode(['status' => 'success', 'message' => '']);
         }
 

@@ -180,11 +180,12 @@ class AuditModel {
     public static function CheckDuplicateAudit($record){
         $db = DB::connectionPACL();
 
-        $desc = $db->real_escape_string($records->desc);
-        $code = $db->real_escape_string($records->code);
+        $desc = $db->real_escape_string($record->desc);
+        $code = $db->real_escape_string($record->code);
+        $id = $db->real_escape_string($record->id);
 
         $find = $desc . '-' . $code;
-        $sql = "SELECT RID FROM list_audit WHERE CONCAT(AUDIT_DESC,'-',AUDIT_CODE, COALESCE(DELETED_AT, '')) = '$find' ";
+        $sql = "SELECT RID FROM list_audit WHERE CONCAT(AUDIT_DESC,'-',AUDIT_CODE, COALESCE(DELETED_AT, '')) = '$find' AND RID != $id";
         $result = mysqli_query($db,$sql);
 
         if(mysqli_num_rows($result) == 0){
@@ -234,6 +235,24 @@ class AuditModel {
         WHERE
             `RID` = $id";
         return $db->query($sql);
+    }
+    public static function RemoveAuditRecord($id){
+        $db = DB::connectionPACL();
+        // $userCode = $_SESSION['USER_CODE'];
+
+        date_default_timezone_set('Asia/Manila');
+        $createdAt = date("Y-m-d H:i:s");
+
+        $sql = "UPDATE
+            `list_audit`
+        SET
+            `DELETED_AT` = '$createdAt'
+        WHERE
+            `RID` = $id";
+        
+        return $db->query($sql);
+
+
     }
 
 }

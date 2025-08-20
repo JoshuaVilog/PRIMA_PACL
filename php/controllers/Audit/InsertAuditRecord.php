@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $record->desc = $desc;
         $record->code = $code;
         $record->category = $category;
+        $record->id = 0;
         
         $isDuplicate = $record::CheckDuplicateAudit($record);
 

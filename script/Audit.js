@@ -340,7 +340,8 @@ class Audit extends Main{
                     ajaxURL: "your_data_endpoint_here.json",
                     layout: "fitDataFill",
                     columns: [
-                        {title: "ID", field: "RID", headerFilter: "input"},
+                        {title: "ID", field: "RID", headerFilter: "input", visible: false},
+                        {title: "ID", formatter: "rownum"},
                         {title: "DESCRIPTION", field: "AUDIT_DESC", headerFilter: "input"},
                         {title: "CODE", field: "AUDIT_CODE", headerFilter: "input"},
                         {title: "CATEGORY", field: "CATEGORY", headerFilter: "input"},
@@ -350,7 +351,7 @@ class Audit extends Main{
                             let edit = '<button class="btn btn-primary btn-minier btnEditRecord" value="'+id+'">Edit</button>';
                             let remove = '<button class="btn btn-danger btn-minier btnRemoveRecord" value="'+id+'">Remove</button>';
 
-                            return edit;
+                            return edit + " " + remove;
                         }},
                     ],
                 });
@@ -360,7 +361,19 @@ class Audit extends Main{
             },
         });
     }
+    PopulateAuditCategory(selectElem, id){
+        let auditCategory = this.GetAuditCategory();
+        let options = '<option value="">-Select-</option>';
+
+        for(let i = 0; i < auditCategory.length; i++) {
+            options += `<option value="${auditCategory[i].a}" ${id == auditCategory[i].a && id != undefined ? "selected" : ""}>${auditCategory[i].b}</option>`;
+        }
+
+        selectElem.html(options);
+    }
     SetRecord(record){
+        let self = this;
+
         $.ajax({
             url: "php/controllers/Audit/GetAuditRecord.php",
             method: "POST",
@@ -373,7 +386,7 @@ class Audit extends Main{
                 record.modal.modal("show");
                 record.desc.val(data.AUDIT_DESC);
                 record.code.val(data.AUDIT_CODE);
-                record.category.val(data.CATEGORY);
+                self.PopulateAuditCategory(record.category, data.CATEGORY);
                 record.hiddenID.val(record.id);
 
                 if(record.btnAdd != undefined || record.btnCancel != undefined || record.btnUpdate != undefined){
@@ -391,8 +404,10 @@ class Audit extends Main{
     InsertRecord(record){
         let self = this;
         let desc = record.desc;
+        let code = record.code;
+        let category = record.category;
         
-        if(desc.val() == ""){
+        if(desc.val() == "" || code.val() == "" || category.val() == ""){
             Swal.fire({
                 title: 'Incomplete Form.',
                 text: 'Please complete the form.',
@@ -400,12 +415,15 @@ class Audit extends Main{
             })
         } else {
             $.ajax({
-                url: "php/controllers/Record/InsertAuditRecord.php",
+                url: "php/controllers/Audit/InsertAuditRecord.php",
                 method: "POST",
                 data: {
                     desc: desc.val(),
+                    code: code.val(),
+                    category: category.val(),
                 },
                 success: function(response){
+                    // console.log(response);
                     response = JSON.parse(response);
 
                     if(response.status == "duplicate"){
@@ -419,7 +437,7 @@ class Audit extends Main{
                         record.modal.modal("hide");
                         record.desc.val("");
                         record.code.val("");
-                        record.category.val("");
+                        self.PopulateAuditCategory(record.category)
     
                         Swal.fire({
                             title: 'Record added successfully!',
@@ -430,6 +448,7 @@ class Audit extends Main{
                             timer: 2000,
                             willClose: () => {
                                 self.DisplayRecords(record.table);
+                                
                             },
                         })
                     }
@@ -469,6 +488,7 @@ class Audit extends Main{
                     id: id.val(),
                 },
                 success: function(response){
+                    // console.log(response);
                     response = JSON.parse(response);
 
                     if(response.status == "duplicate"){
@@ -482,6 +502,8 @@ class Audit extends Main{
 
                         record.modal.modal("hide");
                         record.desc.val("");
+                        record.code.val("");
+                        self.PopulateAuditCategory(record.category)
 
                         if(record.btnAdd != undefined || record.btnCancel != undefined || record.btnUpdate != undefined){
                             record.btnAdd.show();
@@ -511,5 +533,43 @@ class Audit extends Main{
             //REFRESH RECORD
             this.DisplayRecords(record.table);
         }
+    }
+    RemoveRecord(record){
+        let self = this;
+        Swal.fire({
+            title: 'Are you sure you want to remove the record?',
+            icon: 'question',
+            confirmButtonText: 'Yes',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'php/controllers/Audit/RemoveAuditRecord.php', // Replace with your server-side script URL
+                    type: 'POST',
+                    data: {
+                        id: record.id,
+                    },
+                    success: function(response) {
+                        console.log(response);
+
+                        self.DisplayRecords(record.table);
+                        Swal.fire({
+                            title: 'Record removed successfully!',
+                            text: '',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Proceed!',
+                            timer: 2000,
+                            willClose: () => {
+                                // window.location.href = "dashboard";
+                            },
+                        })
+            
+                    }
+                });  
+                this.DisplayRecords(record.table); 
+            }
+        })
+
     }
 }

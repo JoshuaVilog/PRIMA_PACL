@@ -26,7 +26,7 @@
         </li> -->
 
         
-        <!-- <li class="active open" id="menuUtilities">
+        <li class="" id="menuUtilities">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-cog"></i>
                 <span class="menu-text">Utilities</span>
@@ -35,23 +35,15 @@
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
-                    <a href="#">
+                <li class="" id="menuAuditCRUD">
+                    <a href="crud_audit">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        List 1
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-                <li class="">
-                    <a href="#">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        List 2
+                        Audit List
                     </a>
                     <b class="arrow"></b>
                 </li>
             </ul>
-        </li> -->
+        </li>
         
     </ul>
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

@@ -71,10 +71,13 @@
     <!-- JavaScript -->
     <script src="/<?php echo $rootFolder; ?>/script/Audit.js?v=<?php echo $generateRandomNumber; ?>"></script>
     <script>
+        $("#menuUtilities").addClass("active open");
+        $("#menuAuditCRUD").addClass("active");
         let record = new Audit();
 
         //DISPLAY RECORDS
         record.DisplayRecords("#table-records");
+        record.PopulateAuditCategory($("#selectCategory"));
 
         $("#btnOpenModalAdd").click(function(){
             
@@ -84,6 +87,8 @@
         $("#btnAdd").click(function(){
 
             record.desc = $("#txtDesc");
+            record.code = $("#txtCode");
+            record.category = $("#selectCategory");
             record.modal = $("#modalAdd");
             record.table = "#table-records";
 
@@ -95,6 +100,8 @@
 
             record.id = id;
             record.desc = $("#txtDesc");
+            record.code = $("#txtCode");
+            record.category = $("#selectCategory");
             record.modal = $("#modalEdit");
             record.table = "#table-records";
             record.hiddenID = $("#hiddenID");
@@ -107,6 +114,8 @@
         $("#btnUpdate").click(function(){
 
             record.desc = $("#txtDesc");
+            record.code = $("#txtCode");
+            record.category = $("#selectCategory");
             record.id = $("#hiddenID");
             record.modal = $("#modalEdit");
             record.table = "#table-records";
@@ -135,6 +144,8 @@
             $("#btnUpdate").hide();
             $("#btnCancel").hide();
             $("#txtDesc").val("");
+            $("#txtCode").val("");
+            record.PopulateAuditCategory($("#selectCategory"));
             $("#hiddenID").val("");
 
         });
