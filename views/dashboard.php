@@ -31,7 +31,30 @@
                                 <input type="date" id="txtEndDate" class="form-control">
                             </div>
                         </div>
-                        <div class="col-sm-4"></div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div id="chart1V"></div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div id="chart1S"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div id="chart1M"></div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div id="chart1L"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="chart"></div>
+                                </div>
+                            </div>
+                        </div>
                         <style>
                             .tableAuditList {
                                 width: 100%;
@@ -58,7 +81,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-sm-3">
+                        <!-- <div class="col-sm-3">
                             <table id="tableAuditList2" class="tableAuditList">
                                 <thead>
                                     <tr>
@@ -71,12 +94,12 @@
                                 <tbody id="tbodyAuditList2">
                                 </tbody>
                             </table>
-                        </div>
+                        </div> -->
                     </div>
                     <i class="ace-icon fa fa-spinner fa-spin blue bigger-125" id="spinner" style="display: none;"></i>
                     <button class="btn btn-primary btn-sm" id="btnExport">Download</button>
                     <div id="table-records"></div>
-
+                    <div id="chart-container"></div>
                 </div>
             </div>
         </div>
@@ -107,12 +130,13 @@
         let startDate = $("#txtStartDate").val();
         let endDate = $("#txtEndDate").val();
 
-        $("#txtStartDate").prop("max", startDate);
+        $("#txtStartDate").prop("max", endDate);
         $("#txtEndDate").prop("min", endDate);
 
         audit.GetAuditMasterlistByDate("#table-records", startDate, endDate);
         // audit.DisplayAuditCheckList();
         // audit.DisplayAuditCheckList("#table-audit-list");
+        audit.GetPlanRecords(main.GetCurrentDate());
     }, 1000);
 
     setInterval(() => {
@@ -140,5 +164,6 @@
         audit.ExportTable();
     });
 
+    
 
 </script>

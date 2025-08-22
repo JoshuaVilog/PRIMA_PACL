@@ -241,7 +241,7 @@ class Audit extends Main{
 
         tableBody1.innerHTML = ""; // Clear previous content
 
-        for(let i = 0; i < list.length - 11; i++) {
+        for(let i = 0; i < list.length; i++) {
             const rowTr = document.createElement("tr");
 
             if(last1 != list[i].CATEGORY){
@@ -273,7 +273,7 @@ class Audit extends Main{
             tableBody1.appendChild(rowTr);
 
         }
-
+        /* 
         let last2 = "";
         const tableBody2 = document.querySelector("#tbodyAuditList2");
 
@@ -310,9 +310,247 @@ class Audit extends Main{
 
             tableBody2.appendChild(rowTr);
 
-        }
+        } */
     }
+    GetPlanRecords(date, callback){
+        let self = this;
 
+        $.ajax({
+            url: "php/controllers/Audit/PlanRecords.php",
+            method: "POST",
+            data: {
+                date: date,
+            },
+            datatype: "json",
+            success: function(response){
+                console.log(response);
+                self.DisplayChart1(response.data, date)
+            },
+            error: function(err){
+                console.log("Error:"+JSON.stringify(err));
+            },
+        });
+
+    }
+    DisplayChart1(list, date){
+        let arrayComplete = [
+            {
+              value: 0,
+              name: "S"
+            },
+            {
+              value: 0,
+              name: "M"
+            },
+            {
+              value: 0,
+              name: "L"
+            },
+            {
+              value: 0,
+              name: "V"
+            },
+        ];
+        let arrayIncomplete = [
+            {
+              value: 0,
+              name: "S"
+            },
+            {
+              value: 0,
+              name: "M"
+            },
+            {
+              value: 0,
+              name: "L"
+            },
+            {
+              value: 0,
+              name: "V"
+            },
+        ];
+
+        for(let i = 0; i < list.length; i++) {
+            let machineType = list[i].MACHINE[0];
+            let judge = (list[i].JUDGE != 0) ? "COMPLETE" : "INCOMPLETE";
+
+            if(judge == "COMPLETE") {
+
+                arrayComplete.find(obj => obj.name === machineType).value += 1;
+            } else if(judge == "INCOMPLETE") {
+                arrayIncomplete.find(obj => obj.name === machineType).value += 1;
+            }
+            // arrayV.find(obj => obj.label === judge).value += 1;
+        }
+
+        FusionCharts.ready(function() {
+            var myChart = new FusionCharts({
+                type: "stackedcolumn2d",
+                renderAt: "chart",
+                width: "100%",
+                height: "460",
+                dataFormat: "json",
+                dataSource: {
+                    chart: 
+                    {
+                        caption: "Audit Status as of "+date,
+                        subcaption: "",
+                        decimals: "1",
+                        theme: "fusion",
+                        showLegend: "0",
+                        palettecolors: "#6fc78d, #ff0000",
+                    },
+                    categories: [
+                        {
+                          category: [
+                            {
+                              label: "SMALL"
+                            },
+                            {
+                              label: "MEDIUM"
+                            },
+                            {
+                              label: "LARGE"
+                            },
+                            {
+                              label: "VERTICAL"
+                            },
+                          ]
+                        }
+                      ],
+                      dataset: [
+                        {
+                          seriesname: "COMPLETE",
+                          data: arrayComplete,
+                        },
+                        {
+                          seriesname: "INCOMPLETE",
+                          data: arrayIncomplete,
+                        },
+                    ]
+                }
+            }).render();
+        });
+
+
+        /* let arrayS = [
+            {label: "COMPLETE", value: 0,},
+            {label: "INCOMPLETE", value: 0,},
+        ];
+        let arrayM = [
+            {label: "COMPLETE", value: 0,},
+            {label: "INCOMPLETE", value: 0,},
+        ];
+        let arrayL = [
+            {label: "COMPLETE", value: 0,},
+            {label: "INCOMPLETE", value: 0,},
+        ];
+        let arrayV = [
+            {label: "COMPLETE", value: 0,},
+            {label: "INCOMPLETE", value: 0,},
+        ];
+
+        for(let i = 0; i < list.length; i++) {
+            let machineType = list[i].MACHINE[0];
+            let judge = (list[i].JUDGE != 0) ? "COMPLETE" : "INCOMPLETE";
+
+            if(machineType == "S"){
+                arrayS.find(obj => obj.label === judge).value += 1;
+            } else if(machineType == "M"){
+                arrayM.find(obj => obj.label === judge).value += 1;
+            } else if(machineType == "L"){
+                arrayL.find(obj => obj.label === judge).value += 1;
+            } else if(machineType == "V"){
+                arrayV.find(obj => obj.label === judge).value += 1;
+            }
+        }
+
+        FusionCharts.ready(function() {
+            var myChart = new FusionCharts({
+                type: "pie2d",
+                renderAt: "chart1S",
+                width: "100%",
+                height: "260",
+                dataFormat: "json",
+                dataSource: {
+                    chart: 
+                    {
+                        caption: "Audit Status of SMALL",
+                        subcaption: "",
+                        decimals: "1",
+                        theme: "fusion",
+                        showLegend: "0",
+                        palettecolors: "#6fc78d, #ff0000",
+                    },
+                    data: arrayS
+                }
+            }).render();
+        });
+        FusionCharts.ready(function() {
+            var myChart = new FusionCharts({
+                type: "pie2d",
+                renderAt: "chart1M",
+                width: "100%",
+                height: "260",
+                dataFormat: "json",
+                dataSource: {
+                    chart: 
+                    {
+                        caption: "Audit Status of MEDIUM",
+                        subcaption: "",
+                        decimals: "1",
+                        theme: "fusion",
+                        showLegend: "0",
+                        palettecolors: "#6fc78d, #ff0000",
+                    },
+                    data: arrayM
+                }
+            }).render();
+        });
+        FusionCharts.ready(function() {
+            var myChart = new FusionCharts({
+                type: "pie2d",
+                renderAt: "chart1L",
+                width: "100%",
+                height: "260",
+                dataFormat: "json",
+                dataSource: {
+                    chart: 
+                    {
+                        caption: "Audit Status of LARGE",
+                        subcaption: "",
+                        decimals: "1",
+                        theme: "fusion",
+                        showLegend: "0",
+                        palettecolors: "#6fc78d, #ff0000",
+                    },
+                    data: arrayL
+                }
+            }).render();
+        });
+        FusionCharts.ready(function() {
+            var myChart = new FusionCharts({
+                type: "pie2d",
+                renderAt: "chart1V",
+                width: "100%",
+                height: "260",
+                dataFormat: "json",
+                dataSource: {
+                    chart: 
+                    {
+                        caption: "Audit Status of VERTICAL",
+                        subcaption: "",
+                        decimals: "1",
+                        theme: "fusion",
+                        showLegend: "0",
+                        palettecolors: "#6fc78d, #ff0000",
+                    },
+                    data: arrayV
+                }
+            }).render();
+        });
+ */
+    }
 
     //CRUD
     DisplayRecords(tableElem){
